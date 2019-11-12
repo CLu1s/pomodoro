@@ -11,6 +11,7 @@ function Timer() {
   const [restFlag, setRestFlag] = useState(false)
   const [audioStatus, setAudioStatus] = useState(false)
   const [buttonText, setButtonText] = useState("Pause")
+  const [label, setLabel] = useState("Pomodoro")
   useEffect(() => {
     if(buttonText === 'Pause'){
       if (time !== 0 ) {
@@ -29,23 +30,28 @@ function Timer() {
     let pomodoroCount = pomodoro
     let interval
     let flag
+    let label
     if(pomodoro < pomodoros && !restFlag){
       message = "Tiempo de un brake";
       interval = shortBrake
       flag = true
+      label = 'Pomodoro'
     }else if(pomodoro < pomodoros && restFlag ){
       message = "Es hora de regresar a trabajar!"
       pomodoroCount = pomodoro + 1
       interval = pomodoroInterval
       flag = false
+      label = message
     }else if(pomodoro >= pomodoros){
       message = "Un merecido descanso largo!"
       pomodoroCount = 1
       interval = longBreak
       flag = true
+      label = message
     } 
-    setAudioStatus(true)
     notifyMe(message)
+    setAudioStatus(true)
+    setLabel(label)
     setPomodoro(pomodoroCount)
     setTime(interval * 60)
     setRestFlag(flag)
@@ -84,9 +90,10 @@ function Timer() {
   
   return (
     <div>
-      <h1>
+      <h2>{label === 'Pomodoro' ? `${label}: ${pomodoro}`: label}</h2>
+      <h2>
         {minutes < 10 ? `0${minutes}`: minutes} :  {seconds < 10 ? `0${seconds}` :seconds}
-      </h1>
+      </h2>
       <div> <button onClick={pauseAndResume} >{buttonText}</button> </div>
       { audioStatus && <PlayAudio  callback={()=>setAudioStatus(false)}/> }
     </div>
