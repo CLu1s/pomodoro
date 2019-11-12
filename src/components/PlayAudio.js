@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import audio from '../media/sci_fi_beep.mp3'
 
-const AudioPlayback = React.forwardRef((props, ref) =>(
-  <audio src={audio} controls autoPlay/>
-))
 
-function PlayAudio(){
-  const [ref, setRef] = useState()
-  useEffect(()=>setRef(React.createRef()),[ref])
-  // useEffect(()=>ref.current.play())
-  console.log(ref)
+function PlayAudio({callback}){
+  setTimeout(()=>callback(),3000)
   return(
     <div>
-      <AudioPlayback ref={ref} />
+      <audio src={audio} controls autoPlay/>
     </div>
   )
 }

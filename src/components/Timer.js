@@ -9,13 +9,17 @@ function Timer() {
   const [time, setTime] = useState(pomodoroInterval * 60);
   const [pomodoro, setPomodoro] = useState(1)
   const [restFlag, setRestFlag] = useState(false)
+  const [audioStatus, setAudioStatus] = useState(false)
+  const [buttonText, setButtonText] = useState("Pause")
   useEffect(() => {
-    if (time !== 0) {
-      setTimeout(() => {
-        setTime(time - 1);
-      }, 1000);
-    } else {
-      pomodoroCount()
+    if(buttonText === 'Pause'){
+      if (time !== 0 ) {
+        setTimeout(() => {
+          setTime(time - 1);
+        }, 1000);
+      } else {
+        pomodoroCount()
+      }
     }
   });
   const minutes = Math.floor(time / 60);
@@ -40,10 +44,20 @@ function Timer() {
       interval = longBreak
       flag = true
     } 
+    setAudioStatus(true)
     notifyMe(message)
     setPomodoro(pomodoroCount)
     setTime(interval * 60)
     setRestFlag(flag)
+  }
+  function pauseAndResume(){
+    let newText
+    if(buttonText === 'Pause'){
+      newText = 'Resume'
+    }else{
+      newText = 'Pause'
+    }
+    setButtonText(newText)
   }
   function notifyMe(message) {
     // Let's check if the browser supports notifications
@@ -54,7 +68,7 @@ function Timer() {
     // Let's check whether notification permissions have already been granted
     else if (Notification.permission === "granted") {
       // If it's okay let's create a notification
-      var notification = new Notification(message);
+      new Notification(message);
     }
 
     // Otherwise, we need to ask the user for permission
@@ -62,7 +76,7 @@ function Timer() {
       Notification.requestPermission().then(function(permission) {
         // If the user accepts, let's create a notification
         if (permission === "granted") {
-          var notification = new Notification(message);
+          new Notification(message);
         }
       });
     }
@@ -73,7 +87,8 @@ function Timer() {
       <h1>
         {minutes < 10 ? `0${minutes}`: minutes} :  {seconds < 10 ? `0${seconds}` :seconds}
       </h1>
-      <PlayAudio /> 
+      <div> <button onClick={pauseAndResume} >{buttonText}</button> </div>
+      { audioStatus && <PlayAudio  callback={()=>setAudioStatus(false)}/> }
     </div>
   );
 }
